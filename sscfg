@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.0.1"
+VERSION="sscfg v0.0.1"
 # Execute getopt
 ARGS=`getopt -o "hvcq" -l "help,version,create,quiet" \
       -n "sscfg" -- "$@"`
@@ -21,7 +21,29 @@ eval set -- "$ARGS"
 
 showHelp() {
 	cat <<EOF
-sscfg help
+sscfg - shell script configuration manager
+Create and update a user config file for your shell script.
+
+use: 
+sscfg [options] cfgfile command [key] [value]
+
+commands:
+set [key] [value] - add a variable assignment to cfg file  
+unset [key] - removes variable assignment from cfg file
+
+options:
+-h|--help    displays this help
+-v|--version displays sscfg version
+-c|--create  create the cfg file if it doesn't exist
+-q|--quiet   supress regular output
+
+examples:
+Create a new config
+	sscfg --create /tmp/foo set alpha apples
+Add a variable
+	sscfg /tmp/foo set beta bananas
+Remove a variable
+	sscfg /tmp/foo unset alpha
 EOF
 	exit
 }
