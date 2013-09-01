@@ -1,11 +1,11 @@
 #!/bin/bash
 #
 # @author bibby <bibby@bbby.org>
-# @license LGPLv3
+# @license MIT
 
 VERSION="sscfg v0.0.1"
 # Execute getopt
-ARGS=`getopt -o "hvcq" -l "help,version,create,quiet" \
+ARGS=`getopt -o "hvcx" -l "help,version,create,debug" \
       -n "sscfg" -- "$@"`
 
 throw() {
@@ -33,12 +33,13 @@ sscfg [options] cfgfile command [key] [value]
 commands:
 set [key] [value] - add a variable assignment to cfg file  
 unset [key] - removes variable assignment from cfg file
+print
 
 options:
 -h|--help    displays this help
 -v|--version displays sscfg version
 -c|--create  create the cfg file if it doesn't exist
--q|--quiet   supress regular output
+-x|--debug prints actions
 
 examples:
 Create a new config
@@ -51,7 +52,7 @@ EOF
 	exit
 }
 
-quiet=0
+debug=0
 createFile=0
 # Now go through all the options
 while true;
@@ -69,8 +70,8 @@ do
 	  createFile=1
       shift;;
 	
-    -q|--quiet)
-	  quiet=1
+    -x|--debug)
+	  debug=1
       shift;;
 	*)
       shift
@@ -83,6 +84,10 @@ action="$2"
 key="$3"
 value="$4"
 
+msg(){
+	[ "$debug" -eq 1 ] && echo "$@"
+}
+
 # creating a blank config
 if [ "$createFile" -eq 1 ]
 then
@@ -90,20 +95,20 @@ then
 	[ -f "$cfgFile" ] && throw "file $cfgFile already exists"
 
 	echo '#!/bin/bash' > "$cfgFile"
-	[ "$quiet" -eq 0 ] && echo "$cfgFile created"
+	msg "$cfgFile created"
 fi
 
 setVal() {
 	[ ! -z "$key" ] && { 
 		echo "$key=\"$value\"" >> $cfgFile
-		[ "$quiet" -eq 0 ] && echo "added key $key to $cfgFile"
+		msg "added key $key to $cfgFile"
 	}
 }
 
 unsetVal() {
 	[ ! -z "$key" ] && { 
 		sed -i "/^$key=/d" $cfgFile
-		[ "$quiet" -eq 0 ] && echo "removed key $key from $cfgFile"
+		msg "removed key $key from $cfgFile"
 	}
 }
 
@@ -117,5 +122,11 @@ case "$action" in
 	;;
 	"unset")
 		unsetVal
+	;;
+	"print"|"")
+		sed '1d' "$cfgFile"
+	;;
+	"reset")
+		echo "#!/bin/bash" > $cfgFile
 	;;
 esac

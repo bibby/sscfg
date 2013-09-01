@@ -5,23 +5,18 @@ _sscfg() {
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
-	cmds="set unset"
+	cmds="set unset print reset"
 	opts="-c --create -q --quiet -h --help -v --version"
-	combined="${cmds} ${opts}"
 
 	case "$prev" in
-		-c|--create)
+		-c|--create|*sscfg)
 			COMPREPLY=( $(compgen -f -o nospace -- "${cur}"))
-			return 0
-		;;
-		"sscfg")
-			COMPREPLY=( $(compgen -W "${combined}" -- "${cur}") )
 			return 0
 		;;
 	esac
 
 	case "$cur" in
-		*-)
+		-*)
 			COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
 			return 0
 		;;
