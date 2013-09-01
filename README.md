@@ -16,9 +16,10 @@ a basic user config-file manager for shell scripts; "shell script config"
     mySetting="apple"
     otherSetting="banana"
 
-That's it. **sscfg** is intended to make future scripts easier to write by assuming the responsibility of managing the content of these files. The consumer of this script was not meant to be a user in a terminal (though that works),  but rather a command line program looking to manage user settings.
+That's it. **sscfg** is intended to make future scripts easier to write by assuming the responsibility of managing the content of these settings files.
+The consumer of this script was not meant to be a user in a terminal (though that works),  but rather a command line program looking to make use of user settings.
 
-## install
+## Install
 
 For the interest of public projects, it may be prudent to `git subtree` this project into your own should it depend on **sscfg**. For local development, it can be linked to a common `$PATH` item.
 
